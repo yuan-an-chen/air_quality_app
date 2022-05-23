@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/h_card_item"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="@color/blue_1"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:contentPadding="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/card_constraint"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/h_card_idx_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:text="idxTest"/>
+
+        <TextView
+            android:id="@+id/h_card_site_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/h_card_idx_tv"
+            android:layout_marginStart="30dp"
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:text="siteTest"/>
+
+        <TextView
+            android:id="@+id/h_card_reading_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/h_card_site_tv"
+            android:layout_marginStart="30dp"
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:text="readingTest"/>
+
+        <TextView
+            android:id="@+id/h_card_county_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/h_card_idx_tv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:text="countyTest"/>
+
+        <TextView
+            android:id="@+id/h_card_status_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/h_card_reading_tv"
+            app:layout_constraintLeft_toRightOf="@id/h_card_county_tv"
+            android:layout_marginStart="30dp"
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:text="statusTest"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
