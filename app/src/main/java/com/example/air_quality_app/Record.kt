@@ -4,10 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class Record(
 
-    val idx: Int,
+    @SerializedName("SiteId")
+    val siteId: String,
 
     @SerializedName("PM2.5")
-    val reading: Int,
+    val reading: String,
 
     @SerializedName("County")
     val county: String,
@@ -19,6 +20,7 @@ data class Record(
     val status: String
 )
 
-class APIResponse(var records: List<Record>){}
+class APIResponse(var records: List<Record>){
+}
 
 

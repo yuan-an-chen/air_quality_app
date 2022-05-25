@@ -12,10 +12,20 @@
     <color name="blue_2">#6998AB</color>
     <color name="blue_3">#B1D0E0</color>
 
+    <color name="teal_0">#2F8F9D</color>
+    <color name="teal_3">#B3E8E5</color>
+
+    <color name="green_0">#417D7A</color>
+
     <color name="pink_0">#F2789F</color>
     <color name="pink_1">#F999B7</color>
     <color name="pink_2">#F9C5D5</color>
     <color name="pink_3">#FEE3EC</color>
+
+    <color name="beige">#EDE6DB</color>
+
+    <color name="grey_0">#6e6e6e</color>
+    <color name="grey_1">#b3b3b3</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
