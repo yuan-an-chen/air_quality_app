@@ -1,17 +1,19 @@
 package com.example.air_quality_app
 
+import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.VerticalItemLayoutBinding
 
-class VerticalRecyclerAdapter(val records: List<Record>): RecyclerView.Adapter<VerticalViewHolder>() {
+class VerticalRecyclerAdapter(val records: List<Record>): RecyclerView.Adapter<VerticalRecyclerAdapter.VerticalViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalViewHolder {
         val itemLayoutItem = VerticalItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VerticalViewHolder(itemLayoutItem)
+        return VerticalViewHolder(itemLayoutItem, parent.context)
     }
 
     override fun getItemCount(): Int {
@@ -42,7 +44,17 @@ class VerticalRecyclerAdapter(val records: List<Record>): RecyclerView.Adapter<V
         itemBinding.vItemStatusTv.text = records[position].status
     }
 
+    inner class VerticalViewHolder(val itemViewBinding: VerticalItemLayoutBinding, mainContext: Context): RecyclerView.ViewHolder(itemViewBinding.root){
+        init {
 
+            itemViewBinding.root.setOnClickListener {
+                if (records[bindingAdapterPosition].status.length < 10)
+                    Toast.makeText(mainContext, "The PM 2.5 reading of ${records[bindingAdapterPosition].siteName} is ${records[bindingAdapterPosition].reading}.", Toast.LENGTH_LONG).show()
+
+            }
+
+        }
+
+    }
 }
 
-class VerticalViewHolder(val itemViewBinding: VerticalItemLayoutBinding): RecyclerView.ViewHolder(itemViewBinding.root) {}
