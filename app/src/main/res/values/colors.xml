@@ -27,6 +27,15 @@
     <color name="grey_0">#6e6e6e</color>
     <color name="grey_1">#b3b3b3</color>
 
+    <color name="air_good">#009966</color>
+    <color name="air_normal">#aba800</color>
+    <color name="air_specific_unhealthy">#ff9933</color>
+    <color name="air_unhealthy">#cc0033</color>
+    <color name="air_very_unhealthy">#660099</color>
+    <color name="air_harmful">#7e0023</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
 </resources>

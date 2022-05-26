@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/white"
             android:text="idxTest"/>
 
@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/h_card_idx_tv"
             android:layout_marginStart="20dp"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/white"
             android:text="siteTest"/>
 
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/h_card_site_tv"
             android:layout_marginStart="20dp"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/white"
             android:text="readingTest"/>
 
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/h_card_idx_tv"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/white"
             android:text="countyTest"/>
 
@@ -66,7 +66,7 @@
             app:layout_constraintTop_toBottomOf="@id/h_card_reading_tv"
             app:layout_constraintLeft_toRightOf="@id/h_card_county_tv"
             android:layout_marginStart="20dp"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/white"
             android:text="statusTest"/>
 

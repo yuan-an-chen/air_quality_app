@@ -9,10 +9,20 @@ class Records(var apiResponse: APIResponse) {
         horizontalRecords.clear()
         verticalRecords.clear()
         for (record in apiResponse.records) {
-            if (record.reading.toInt() <= threshold)
-                horizontalRecords.add(record)
-            else
-                verticalRecords.add(record)
+            val newRecord: Record = record.copy()
+
+            if (record.reading.isEmpty()){
+                newRecord.reading = "設備異常"
+            }
+
+            if (newRecord.reading == "設備異常" || record.reading.toInt() > threshold){
+                if (record.status == "良好")
+                    newRecord.status = "The status is good, we want to go out to have fun"
+                verticalRecords.add(newRecord)
+            } else{
+                horizontalRecords.add(newRecord)
+            }
+
         }
 
     }
@@ -20,8 +30,16 @@ class Records(var apiResponse: APIResponse) {
     fun filterRecords(searchWord: String) {
         verticalRecords.clear()
         for (record in apiResponse.records) {
-            if (record.siteName.contains(searchWord) || record.county.contains(searchWord))
-                verticalRecords.add(record)
+            if (record.siteName.contains(searchWord) || record.county.contains(searchWord)){
+                val newRecord: Record = record.copy()
+                if (record.reading.isEmpty())
+                    newRecord.reading = "設備異常"
+
+                if (record.status == "良好")
+                    newRecord.status = "The status is good, we want to go out to have fun"
+                verticalRecords.add(newRecord)
+
+            }
         }
 
     }

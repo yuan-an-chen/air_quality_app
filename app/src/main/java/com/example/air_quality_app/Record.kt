@@ -8,7 +8,7 @@ data class Record(
     val siteId: String,
 
     @SerializedName("PM2.5")
-    val reading: String,
+    var reading: String,
 
     @SerializedName("County")
     val county: String,
@@ -17,7 +17,7 @@ data class Record(
     val siteName: String,
 
     @SerializedName("Status")
-    val status: String
+    var status: String
 )
 
 class APIResponse(var records: List<Record>){

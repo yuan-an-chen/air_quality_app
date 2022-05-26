@@ -1,6 +1,8 @@
 package com.example.air_quality_app
 
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.VerticalItemLayoutBinding
@@ -22,6 +24,21 @@ class VerticalRecyclerAdapter(val records: List<Record>): RecyclerView.Adapter<V
         itemBinding.vItemReadingTv.text = records[position].reading
         itemBinding.vItemCountyTv.text = records[position].county
         itemBinding.vItemSiteTv.text = records[position].siteName
+
+        when(records[position].status){
+            "普通" -> itemBinding.vItemStatusTv.setTextColor(Color.parseColor("#b3b002"))
+            "對敏感族群不健康" -> itemBinding.vItemStatusTv.setTextColor(Color.parseColor("#ff9933"))
+            "對所有族群不健康" -> itemBinding.vItemStatusTv.setTextColor(Color.parseColor("#cc0033"))
+            "非常不健康" -> itemBinding.vItemStatusTv.setTextColor(Color.parseColor("#660099"))
+            "危害" -> itemBinding.vItemStatusTv.setTextColor(Color.parseColor("#7e0023"))
+        }
+
+        if (records[position].status.length > 8){
+            itemBinding.vItemStatusTv.setTextColor(Color.parseColor("#009966"))
+            itemBinding.vItemArrowTv.visibility = View.GONE
+        } else
+            itemBinding.vItemArrowTv.visibility = View.VISIBLE
+
         itemBinding.vItemStatusTv.text = records[position].status
     }
 

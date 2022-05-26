@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity() {
 
     fun fetchData(){
         val targetUrl = "https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json"
+//        val targetUrl = "https://32cf988a-bd84-48a9-987e-9d3288154b0d.mock.pstmn.io/air_api"
+
         val request = Request.Builder().url(targetUrl).build()
         val client = OkHttpClient()
         client.newCall(request).enqueue(object: Callback{
@@ -71,16 +74,33 @@ class MainActivity : AppCompatActivity() {
 
         val menuItem: MenuItem = menu!!.findItem(R.id.search_item)
 
-        val searchView: SearchView = menuItem.actionView as SearchView
+        menuItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                binding.horizontalRecycleView.visibility = View.GONE
+                return true
+            }
 
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                mainRecords.filterRecords()
+                binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
+                binding.horizontalRecycleView.visibility = View.VISIBLE
+                return true
+            }
+
+
+        })
+
+        val searchView: androidx.appcompat.widget.SearchView = menuItem.actionView as androidx.appcompat.widget.SearchView
+
+        searchView.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText!!.isEmpty())
-                    println("empty...")
+                if (newText!!.isEmpty()){
+
+                }
                 else{
                     mainRecords.filterRecords(newText)
                     binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
@@ -89,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
         })
+
 
         return super.onCreateOptionsMenu(menu)
     }
