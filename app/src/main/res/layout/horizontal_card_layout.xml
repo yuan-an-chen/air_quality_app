@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/h_card_item"
     android:layout_margin="5dp"
-    app:cardBackgroundColor="@color/green_0"
+    app:cardBackgroundColor="@color/blue_0"
     app:cardCornerRadius="15dp"
     app:cardElevation="5dp"
     app:contentPadding="4dp">
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textColor="@color/beige_1"
             android:text="idxTest"/>
 
         <TextView
@@ -35,7 +35,7 @@
             app:layout_constraintLeft_toRightOf="@id/h_card_idx_tv"
             android:layout_marginStart="20dp"
             android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textColor="@color/beige_1"
             android:text="siteTest"/>
 
         <TextView
@@ -46,7 +46,7 @@
             app:layout_constraintLeft_toRightOf="@id/h_card_site_tv"
             android:layout_marginStart="20dp"
             android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textColor="@color/beige_1"
             android:text="readingTest"/>
 
         <TextView
@@ -56,7 +56,7 @@
             app:layout_constraintTop_toBottomOf="@id/h_card_idx_tv"
             app:layout_constraintLeft_toLeftOf="parent"
             android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textColor="@color/beige_1"
             android:text="countyTest"/>
 
         <TextView
@@ -67,7 +67,7 @@
             app:layout_constraintLeft_toRightOf="@id/h_card_county_tv"
             android:layout_marginStart="20dp"
             android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textColor="@color/beige_1"
             android:text="statusTest"/>
 
 

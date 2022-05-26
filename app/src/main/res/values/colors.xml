@@ -7,10 +7,8 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
 
-    <color name="blue_0">#1A374D</color>
-    <color name="blue_1">#406882</color>
-    <color name="blue_2">#6998AB</color>
-    <color name="blue_3">#B1D0E0</color>
+    <color name="blue_0">#1C658C</color>
+    <color name="blue_1">#398AB9</color>
 
     <color name="teal_0">#2F8F9D</color>
     <color name="teal_3">#B3E8E5</color>
@@ -22,7 +20,8 @@
     <color name="pink_2">#F9C5D5</color>
     <color name="pink_3">#FEE3EC</color>
 
-    <color name="beige">#EDE6DB</color>
+    <color name="beige_0">#EDE6DB</color>
+    <color name="beige_1">#EEEEEE</color>
 
     <color name="grey_0">#6e6e6e</color>
     <color name="grey_1">#b3b3b3</color>

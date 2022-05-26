@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import androidx.appcompat.app.ActionBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.ActivityMainBinding
@@ -24,6 +25,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.searchViewInfoLayout.visibility = View.GONE
+
+        title = "空氣汙染"
+
         val hRecyclerView: RecyclerView = binding.horizontalRecycleView
         val hLayoutManager = LinearLayoutManager(this)
         hLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
@@ -31,6 +36,9 @@ class MainActivity : AppCompatActivity() {
 
         val vRecyclerView: RecyclerView = binding.verticalRecycleView
         vRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        binding.horizontalRecycleView.adapter = HorizontalRecyclerAdapter(mainRecords.horizontalRecords)
+        binding.verticalRecycleView.adapter = VerticalRecyclerAdapter(mainRecords.verticalRecords)
 
         fetchData()
 
@@ -56,9 +64,9 @@ class MainActivity : AppCompatActivity() {
 
                 mainRecords.filterRecords()
 
-                runOnUiThread{
-                    binding.horizontalRecycleView.adapter = HorizontalRecyclerAdapter(mainRecords.horizontalRecords)
-                    binding.verticalRecycleView.adapter = VerticalRecyclerAdapter(mainRecords.verticalRecords)
+                runOnUiThread {
+                    binding.horizontalRecycleView.adapter!!.notifyDataSetChanged()
+                    binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
                 }
 
             }
@@ -77,6 +85,10 @@ class MainActivity : AppCompatActivity() {
         menuItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 binding.horizontalRecycleView.visibility = View.GONE
+                binding.verticalRecycleView.visibility = View.GONE
+                binding.searchViewInfoLayout.visibility = View.VISIBLE
+
+                binding.searchViewInfoTV.text = getString(R.string.empty_search_view_info)
                 return true
             }
 
@@ -84,31 +96,57 @@ class MainActivity : AppCompatActivity() {
                 mainRecords.filterRecords()
                 binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
                 binding.horizontalRecycleView.visibility = View.VISIBLE
+                binding.verticalRecycleView.visibility = View.VISIBLE
+                binding.searchViewInfoLayout.visibility = View.GONE
                 return true
             }
-
-
         })
 
         val searchView: androidx.appcompat.widget.SearchView = menuItem.actionView as androidx.appcompat.widget.SearchView
 
+        searchView.queryHint = getString(R.string.search_view_hint)
+
         searchView.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
+
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText!!.isEmpty()){
 
-                }
-                else{
-                    mainRecords.filterRecords(newText)
-                    binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
+                if (binding.horizontalRecycleView.visibility != View.VISIBLE){
+
+                    if (newText!!.isEmpty()){
+
+                        binding.verticalRecycleView.visibility = View.GONE
+                        binding.searchViewInfoLayout.visibility = View.VISIBLE
+
+                        binding.searchViewInfoTV.text = getString(R.string.empty_search_view_info)
+
+                    }
+                    else{
+                        mainRecords.filterRecords(newText)
+
+                        if (mainRecords.verticalRecords.isEmpty()){
+                            binding.verticalRecycleView.visibility = View.GONE
+                            binding.searchViewInfoLayout.visibility = View.VISIBLE
+
+                            binding.searchViewInfoTV.text = getString(R.string.not_found_search_view_info, newText)
+                        } else{
+                            binding.searchViewInfoLayout.visibility = View.GONE
+                            binding.verticalRecycleView.visibility = View.VISIBLE
+                            binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
+                        }
+
+
+                    }
+
                 }
 
                 return true
             }
         })
+
 
 
         return super.onCreateOptionsMenu(menu)
