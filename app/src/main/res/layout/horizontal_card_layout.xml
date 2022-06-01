@@ -7,7 +7,7 @@
     android:id="@+id/h_card_item"
     android:layout_margin="5dp"
     app:cardBackgroundColor="@color/blue_0"
-    app:cardCornerRadius="15dp"
+    app:cardCornerRadius="10dp"
     app:cardElevation="5dp"
     app:contentPadding="4dp">
 

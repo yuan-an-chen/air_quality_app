@@ -2,11 +2,15 @@ package com.example.air_quality_app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import androidx.appcompat.app.ActionBar
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.ActivityMainBinding
@@ -14,11 +18,21 @@ import com.google.gson.GsonBuilder
 import okhttp3.*
 import java.io.IOException
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityMainBinding
 
     private var mainRecords: Records = Records(APIResponse(listOf()))
+
+    val handler = Handler(Looper.getMainLooper())
+
+    private val fetchDataRunnable: Runnable = object : Runnable{
+        override fun run() {
+            println("fetching data...")
+            fetchData()
+            handler.postDelayed(this, 600000)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.searchViewInfoLayout.visibility = View.GONE
 
-        title = "空氣汙染"
+        title = getString(R.string.app_title)
 
         val hRecyclerView: RecyclerView = binding.horizontalRecycleView
         val hLayoutManager = LinearLayoutManager(this)
@@ -40,14 +54,18 @@ class MainActivity : AppCompatActivity() {
         binding.horizontalRecycleView.adapter = HorizontalRecyclerAdapter(mainRecords.horizontalRecords)
         binding.verticalRecycleView.adapter = VerticalRecyclerAdapter(mainRecords.verticalRecords)
 
-        fetchData()
+        binding.verticalRefresh.setOnRefreshListener {
+            fetchData()
+        }
 
+        handler.post(fetchDataRunnable)
     }
 
 
+
     fun fetchData(){
-        val targetUrl = "https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json"
-//        val targetUrl = "https://32cf988a-bd84-48a9-987e-9d3288154b0d.mock.pstmn.io/air_api"
+//        val targetUrl = "https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json"
+        val targetUrl = "https://32cf988a-bd84-48a9-987e-9d3288154b0d.mock.pstmn.io/air_api"
 
         val request = Request.Builder().url(targetUrl).build()
         val client = OkHttpClient()
@@ -67,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     binding.horizontalRecycleView.adapter!!.notifyDataSetChanged()
                     binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
+                    binding.verticalRefresh.isRefreshing = false
                 }
 
             }
