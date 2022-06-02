@@ -64,8 +64,8 @@ class MainActivity : AppCompatActivity(){
 
 
     fun fetchData(){
-//        val targetUrl = "https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json"
-        val targetUrl = "https://32cf988a-bd84-48a9-987e-9d3288154b0d.mock.pstmn.io/air_api"
+        val targetUrl = "https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json"
+//        val targetUrl = "https://32cf988a-bd84-48a9-987e-9d3288154b0d.mock.pstmn.io/air_api"
 
         val request = Request.Builder().url(targetUrl).build()
         val client = OkHttpClient()
@@ -107,6 +107,8 @@ class MainActivity : AppCompatActivity(){
                 binding.verticalRecycleView.visibility = View.GONE
                 binding.searchViewInfoLayout.visibility = View.VISIBLE
 
+                binding.verticalRefresh.isEnabled = false
+
                 binding.searchViewInfoTV.text = getString(R.string.empty_search_view_info)
                 return true
             }
@@ -117,6 +119,7 @@ class MainActivity : AppCompatActivity(){
                 binding.horizontalRecycleView.visibility = View.VISIBLE
                 binding.verticalRecycleView.visibility = View.VISIBLE
                 binding.searchViewInfoLayout.visibility = View.GONE
+                binding.verticalRefresh.isEnabled = true
                 return true
             }
         })
@@ -136,7 +139,6 @@ class MainActivity : AppCompatActivity(){
                 if (binding.horizontalRecycleView.visibility != View.VISIBLE){
 
                     if (newText!!.isEmpty()){
-
                         binding.verticalRecycleView.visibility = View.GONE
                         binding.searchViewInfoLayout.visibility = View.VISIBLE
 
