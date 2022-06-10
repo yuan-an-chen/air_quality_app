@@ -9,7 +9,13 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.VerticalItemLayoutBinding
 
-class VerticalRecyclerAdapter(val records: List<Record>): RecyclerView.Adapter<VerticalRecyclerAdapter.VerticalViewHolder>() {
+class VerticalRecyclerAdapter(): RecyclerView.Adapter<VerticalRecyclerAdapter.VerticalViewHolder>() {
+
+    private var records: List<Record> = listOf()
+
+    fun submitList(newList: List<Record>){
+        records = newList
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalViewHolder {
         val itemLayoutItem = VerticalItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)

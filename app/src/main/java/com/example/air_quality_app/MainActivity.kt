@@ -11,6 +11,7 @@ import android.widget.SearchView
 import androidx.appcompat.app.ActionBar
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.ActivityMainBinding
@@ -22,17 +23,21 @@ class MainActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityMainBinding
 
-    private var mainRecords: Records = Records(APIResponse(listOf()))
+//    private var mainRecords: Records = Records(APIResponse(listOf()))
+
+    private val mainViewModel: RecordViewModel by lazy {
+        ViewModelProvider(this)[RecordViewModel::class.java]
+    }
 
     val handler = Handler(Looper.getMainLooper())
 
-    private val fetchDataRunnable: Runnable = object : Runnable{
-        override fun run() {
-            println("fetching data...")
-            fetchData()
-            handler.postDelayed(this, 600000)
-        }
-    }
+//    private val fetchDataRunnable: Runnable = object : Runnable{
+//        override fun run() {
+//            println("fetching data...")
+//            fetchData()
+//            handler.postDelayed(this, 600000)
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,52 +52,66 @@ class MainActivity : AppCompatActivity(){
         val hLayoutManager = LinearLayoutManager(this)
         hLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         hRecyclerView.layoutManager = hLayoutManager
+        val horizontalRecyclerAdapter = HorizontalRecyclerAdapter()
 
         val vRecyclerView: RecyclerView = binding.verticalRecycleView
         vRecyclerView.layoutManager = LinearLayoutManager(this)
+        val verticalRecyclerAdapter = VerticalRecyclerAdapter()
 
-        binding.horizontalRecycleView.adapter = HorizontalRecyclerAdapter(mainRecords.horizontalRecords)
-        binding.verticalRecycleView.adapter = VerticalRecyclerAdapter(mainRecords.verticalRecords)
+        binding.horizontalRecycleView.adapter = horizontalRecyclerAdapter
+        binding.verticalRecycleView.adapter = verticalRecyclerAdapter
 
-        binding.verticalRefresh.setOnRefreshListener {
-            fetchData()
+        mainViewModel.horizontalListLiveData.observe(this) {
+            horizontalRecyclerAdapter.submitList(it)
+            horizontalRecyclerAdapter.notifyDataSetChanged()
         }
 
-        handler.post(fetchDataRunnable)
+        mainViewModel.verticalListLiveData.observe(this) {
+            verticalRecyclerAdapter.submitList(it)
+            verticalRecyclerAdapter.notifyDataSetChanged()
+        }
+
+
+//        binding.verticalRefresh.setOnRefreshListener {
+//            fetchData()
+//        }
+
+//        handler.post(fetchDataRunnable)
     }
 
 
 
-    fun fetchData(){
-        val targetUrl = "https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json"
-//        val targetUrl = "https://32cf988a-bd84-48a9-987e-9d3288154b0d.mock.pstmn.io/air_api"
-
-        val request = Request.Builder().url(targetUrl).build()
-        val client = OkHttpClient()
-        client.newCall(request).enqueue(object: Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                println("failed to fetch data with error: $e")
-            }
-
-            override fun onResponse(call: Call, response: okhttp3.Response) {
-                println("onResponse......")
-                val body = response.body?.string()
-                val gson = GsonBuilder().create()
-                mainRecords.apiResponse = gson.fromJson(body, APIResponse::class.java)
-
-                mainRecords.filterRecords()
-
-                runOnUiThread {
-                    binding.horizontalRecycleView.adapter!!.notifyDataSetChanged()
-                    binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
-                    binding.verticalRefresh.isRefreshing = false
-                }
-
-            }
-
-        })
-
-    }
+//    fun fetchData(){
+//        val targetUrl = "https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&sort=ImportDate%20desc&format=json"
+////        val targetUrl = "https://data.epa.gov.tw/api/v2/aqx_p_432?api_key=9f0ec647-3bda-41fb-806d-7a4be103053a&sort=ImportDate%20desc&format=json"
+////        val targetUrl = "https://32cf988a-bd84-48a9-987e-9d3288154b0d.mock.pstmn.io/air_api"
+//
+//        val request = Request.Builder().url(targetUrl).build()
+//        val client = OkHttpClient()
+//        client.newCall(request).enqueue(object: Callback{
+//            override fun onFailure(call: Call, e: IOException) {
+//                println("failed to fetch data with error: $e")
+//            }
+//
+//            override fun onResponse(call: Call, response: okhttp3.Response) {
+//                println("onResponse......")
+//                val body = response.body?.string()
+//                val gson = GsonBuilder().create()
+//                mainRecords.apiResponse = gson.fromJson(body, APIResponse::class.java)
+//
+//                mainRecords.filterRecords()
+//
+//                runOnUiThread {
+//                    binding.horizontalRecycleView.adapter!!.notifyDataSetChanged()
+//                    binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
+//                    binding.verticalRefresh.isRefreshing = false
+//                }
+//
+//            }
+//
+//        })
+//
+//    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -114,7 +133,7 @@ class MainActivity : AppCompatActivity(){
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                mainRecords.filterRecords()
+//                mainRecords.filterRecords()
                 binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
                 binding.horizontalRecycleView.visibility = View.VISIBLE
                 binding.verticalRecycleView.visibility = View.VISIBLE
@@ -146,19 +165,19 @@ class MainActivity : AppCompatActivity(){
 
                     }
                     else{
-                        mainRecords.filterRecords(newText)
-
-                        if (mainRecords.verticalRecords.isEmpty()){
-                            binding.verticalRecycleView.visibility = View.GONE
-                            binding.searchViewInfoLayout.visibility = View.VISIBLE
-
-                            binding.searchViewInfoTV.text = getString(R.string.not_found_search_view_info, newText)
-                        } else{
-                            binding.searchViewInfoLayout.visibility = View.GONE
-                            binding.verticalRecycleView.visibility = View.VISIBLE
-                            binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
-                        }
-
+//                        mainRecords.filterRecords(newText)
+//
+//                        if (mainRecords.verticalRecords.isEmpty()){
+//                            binding.verticalRecycleView.visibility = View.GONE
+//                            binding.searchViewInfoLayout.visibility = View.VISIBLE
+//
+//                            binding.searchViewInfoTV.text = getString(R.string.not_found_search_view_info, newText)
+//                        } else{
+//                            binding.searchViewInfoLayout.visibility = View.GONE
+//                            binding.verticalRecycleView.visibility = View.VISIBLE
+//                            binding.verticalRecycleView.adapter!!.notifyDataSetChanged()
+//                        }
+//
 
                     }
 

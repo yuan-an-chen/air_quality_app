@@ -5,11 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.HorizontalCardLayoutBinding
 
-class HorizontalRecyclerAdapter(val records: List<Record>): RecyclerView.Adapter<HorizontalViewHolder>() {
+class HorizontalRecyclerAdapter(): RecyclerView.Adapter<HorizontalViewHolder>() {
+
+    private var records: List<Record> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HorizontalViewHolder {
         val cardLayoutItem = HorizontalCardLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return HorizontalViewHolder(cardLayoutItem)
+    }
+
+    fun submitList(newList: List<Record>){
+        records = newList
     }
 
     override fun getItemCount(): Int {
