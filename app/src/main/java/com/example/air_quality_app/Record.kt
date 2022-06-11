@@ -20,7 +20,6 @@ data class Record(
     var status: String
 )
 
-class APIResponse(var records: List<Record>){
-}
+class APIResponse(var records: List<Record>){}
 
 

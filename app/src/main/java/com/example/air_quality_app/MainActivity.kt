@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -25,8 +26,8 @@ class MainActivity : AppCompatActivity(){
 
 //    private var mainRecords: Records = Records(APIResponse(listOf()))
 
-    private val mainViewModel: RecordViewModel by lazy {
-        ViewModelProvider(this)[RecordViewModel::class.java]
+    private val mainViewModel by viewModels<RecordViewModel>{
+        RecordViewModelFactory(Repository.getInstance())
     }
 
     val handler = Handler(Looper.getMainLooper())
@@ -114,7 +115,7 @@ class MainActivity : AppCompatActivity(){
 //    }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
         menuInflater.inflate(R.menu.toobar_menu, menu)
 

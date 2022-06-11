@@ -3,6 +3,7 @@ package com.example.air_quality_app
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.google.gson.GsonBuilder
 import okhttp3.Call
 import okhttp3.Callback
@@ -75,4 +76,11 @@ class RecordViewModel(private val repo: Repository): ViewModel() {
     }
 
 
+}
+
+class RecordViewModelFactory(private val repo: Repository): ViewModelProvider.NewInstanceFactory(){
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return RecordViewModel(repo) as T
+    }
 }
