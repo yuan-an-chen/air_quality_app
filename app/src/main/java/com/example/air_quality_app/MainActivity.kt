@@ -2,8 +2,6 @@ package com.example.air_quality_app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.ActivityMainBinding
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.*
 import java.io.IOException
 
@@ -24,21 +24,7 @@ class MainActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityMainBinding
 
-//    private var mainRecords: Records = Records(APIResponse(listOf()))
-
-    private val mainViewModel by viewModels<RecordViewModel>{
-        RecordViewModelFactory(Repository.getInstance())
-    }
-
-    val handler = Handler(Looper.getMainLooper())
-
-//    private val fetchDataRunnable: Runnable = object : Runnable{
-//        override fun run() {
-//            println("fetching data...")
-//            fetchData()
-//            handler.postDelayed(this, 600000)
-//        }
-//    }
+    private val mainViewModel by viewModels<RecordViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +32,6 @@ class MainActivity : AppCompatActivity(){
         setContentView(binding.root)
 
         binding.searchViewInfoLayout.visibility = View.GONE
-
         title = getString(R.string.app_title)
 
         val hRecyclerView: RecyclerView = binding.horizontalRecycleView
@@ -77,7 +62,7 @@ class MainActivity : AppCompatActivity(){
 //            fetchData()
 //        }
 
-//        handler.post(fetchDataRunnable)
+
     }
 
 

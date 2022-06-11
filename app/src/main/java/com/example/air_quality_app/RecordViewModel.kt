@@ -1,21 +1,12 @@
 package com.example.air_quality_app
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.google.gson.GsonBuilder
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.IOException
+import androidx.lifecycle.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
-
-class RecordViewModel(private val repo: Repository): ViewModel() {
-
-    private var apiResponse: APIResponse = APIResponse(listOf())
+class RecordViewModel(): ViewModel() {
 
     private var _horizontalListLiveData = MutableLiveData<List<Record>>()
     val horizontalListLiveData: LiveData<List<Record>>
@@ -30,31 +21,18 @@ class RecordViewModel(private val repo: Repository): ViewModel() {
     }
 
     private fun fetchData(){
-        val requestClient = repo.getClient()
-
-        requestClient.enqueue(object: Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                println("failed to fetch data with error: $e")
+        viewModelScope.launch(Dispatchers.IO) {
+            Repository.getInstance().dataFlow.collectLatest { recordList->
+                filterRecords(recordList)
             }
-
-            override fun onResponse(call: Call, response: okhttp3.Response) {
-                println("onResponse......")
-                val body = response.body?.string()
-                val gson = GsonBuilder().create()
-                apiResponse = gson.fromJson(body, APIResponse::class.java)
-
-                filterRecords()
-            }
-
-        })
-
+        }
     }
 
-    fun filterRecords(threshold: Int = 5) {
+    fun filterRecords(records: List<Record>, threshold: Int = 5) {
         val horizontalRecords: ArrayList<Record> = ArrayList()
         val verticalRecords: ArrayList<Record> = ArrayList()
 
-        for (record in apiResponse.records) {
+        for (record in records) {
             val newRecord: Record = record.copy()
 
             if (record.reading.isEmpty()){
@@ -76,11 +54,4 @@ class RecordViewModel(private val repo: Repository): ViewModel() {
     }
 
 
-}
-
-class RecordViewModelFactory(private val repo: Repository): ViewModelProvider.NewInstanceFactory(){
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return RecordViewModel(repo) as T
-    }
 }
