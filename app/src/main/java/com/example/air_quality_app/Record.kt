@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName
 
 data class Record(
 
-    @SerializedName("SiteId")
+    @SerializedName("siteid")
     val siteId: String,
 
-    @SerializedName("PM2.5")
+    @SerializedName("pm2.5")
     var reading: String,
 
-    @SerializedName("County")
+    @SerializedName("county")
     val county: String,
 
-    @SerializedName("SiteName")
+    @SerializedName("sitename")
     val siteName: String,
 
-    @SerializedName("Status")
+    @SerializedName("status")
     var status: String
 )
 
