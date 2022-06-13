@@ -10,13 +10,13 @@ class Repository private constructor(){
     val dataFlow: Flow<List<Record>> = flow{
         emit(fetchData())
         while (true){
-//            delay(600000)
-            delay(3000)
+            delay(600000)
+//            delay(5000)
             emit(fetchData())
         }
     }
 
-    private suspend fun fetchData(): List<Record>{
+    suspend fun fetchData(): List<Record>{
         val retroInstance = RetrofitInstance.instance.create(APIService::class.java)
         val response = retroInstance.fetchData()
         return response.records
