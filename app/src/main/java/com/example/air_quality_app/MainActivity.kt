@@ -1,12 +1,13 @@
 package com.example.air_quality_app
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(){
@@ -19,6 +20,8 @@ class MainActivity : AppCompatActivity(){
     private val verticalRecyclerAdapter = VerticalRecyclerAdapter()
     private val searchRecyclerAdapter = VerticalRecyclerAdapter()
 
+    private var currentSearchText = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -28,38 +31,56 @@ class MainActivity : AppCompatActivity(){
         title = getString(R.string.app_title)
 
         // setup layout manager and adapter for horizontalRecycleView
-        binding.horizontalRecycleView.layoutManager = LinearLayoutManager(
+        binding.horizontalRecyclerView.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.HORIZONTAL,
             false)
-        binding.horizontalRecycleView.adapter = horizontalRecyclerAdapter
+        binding.horizontalRecyclerView.adapter = horizontalRecyclerAdapter
 
         // listen for horizontalListLiveData changes to update horizontalRecycleView
         mainViewModel.horizontalListLiveData.observe(this) {
             horizontalRecyclerAdapter.submitList(it)
-            horizontalRecyclerAdapter.notifyDataSetChanged()
             binding.verticalRefresh.isRefreshing = false
         }
 
         // setup layout manager and adapter for verticalRecycleView
-        binding.verticalRecycleView.layoutManager = LinearLayoutManager(this)
-        binding.verticalRecycleView.adapter = verticalRecyclerAdapter
+        binding.verticalRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.verticalRecyclerView.adapter = verticalRecyclerAdapter
 
         // listen for verticalListLiveData changes to update verticalRecycleView
         mainViewModel.verticalListLiveData.observe(this) {
             verticalRecyclerAdapter.submitList(it)
-            verticalRecyclerAdapter.notifyDataSetChanged()
             binding.verticalRefresh.isRefreshing = false
         }
 
-        binding.searchRecycleView.layoutManager = LinearLayoutManager(this)
-        binding.searchRecycleView.adapter = searchRecyclerAdapter
+        binding.searchRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.searchRecyclerView.adapter = searchRecyclerAdapter
+
+        // scroll to top when list is updated
+        searchRecyclerAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                (binding.searchRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(positionStart, 0)
+            }
+        })
 
         mainViewModel.searchListLiveData.observe(this) {
+
+            if (currentSearchText.isEmpty()){
+                binding.searchViewInfoTV.text = getString(R.string.empty_search_view_info)
+            }
+            else{
+                binding.searchViewInfoTV.text = ""
+
+                if (it.isEmpty()){
+                    binding.searchViewInfoTV.text = getString(R.string.not_found_search_view_info, currentSearchText)
+                }
+
+            }
+
             searchRecyclerAdapter.submitList(it)
-            searchRecyclerAdapter.notifyDataSetChanged()
         }
 
+        // listen for swipe refresh
         binding.verticalRefresh.setOnRefreshListener {
             mainViewModel.fetchData()
         }
@@ -86,7 +107,6 @@ class MainActivity : AppCompatActivity(){
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
 
-                mainViewModel.filterRecords()
                 binding.mainDisplayLayout.visibility = View.VISIBLE
                 binding.searchViewInfoLayout.visibility = View.GONE
                 binding.verticalRefresh.isEnabled = true
@@ -108,25 +128,13 @@ class MainActivity : AppCompatActivity(){
 
                 if (binding.mainDisplayLayout.visibility != View.VISIBLE){
 
-                    mainViewModel.searchFor(newText!!)
+                    currentSearchText = newText!!
+                    mainViewModel.searchFor(newText)
 
-                    if (newText.isEmpty()){
-                        binding.searchViewInfoTV.text = getString(R.string.empty_search_view_info)
-                    }
-                    else{
-                        binding.searchViewInfoTV.text = ""
-
-                        if (searchRecyclerAdapter.itemCount == 0){
-                            binding.searchViewInfoTV.text = getString(R.string.not_found_search_view_info, newText)
-                        }
-
-                    }
                 }
                 return true
             }
         })
-
-
 
         return super.onCreateOptionsMenu(menu)
     }

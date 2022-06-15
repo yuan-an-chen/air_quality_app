@@ -21,28 +21,14 @@ class RecordViewModel(): ViewModel() {
     private val searchTrigger = MutableLiveData<String>("")
 
     val searchListLiveData: LiveData<List<Record>> = searchTrigger.switchMap {
-        val resultRecords: ArrayList<Record> = ArrayList()
 
-        if (it.isNotEmpty()){
-            for (record in records) {
-                if (record.siteName.contains(it) || record.county.contains(it)){
-                    val newRecord: Record = record.copy()
-                    if (record.reading.isEmpty())
-                        newRecord.reading = "設備異常"
-
-                    if (record.status == "良好")
-                        newRecord.status = "The status is good, we want to go out to have fun"
-                    resultRecords.add(newRecord)
-                }
+        MutableLiveData<List<Record>>(
+            records.filter { record->
+                it.isNotEmpty() && (record.siteName.contains(it) || record.county.contains(it))
             }
-        }
-
-        MutableLiveData<List<Record>>(resultRecords)
+        )
     }
 
-    fun searchFor(searchWord: String) {
-        searchTrigger.value = searchWord
-    }
 
     init {
         // listen for data change in repository via flow
@@ -54,6 +40,10 @@ class RecordViewModel(): ViewModel() {
         }
     }
 
+    fun searchFor(searchWord: String) {
+        searchTrigger.value = searchWord
+    }
+
     fun fetchData(){
         viewModelScope.launch(Dispatchers.IO) {
             records = Repository.getInstance().fetchData()
@@ -61,24 +51,18 @@ class RecordViewModel(): ViewModel() {
         }
     }
 
-    fun filterRecords(threshold: Int = 5) {
+    private fun filterRecords(threshold: Int = 5) {
         val horizontalRecords: ArrayList<Record> = ArrayList()
         val verticalRecords: ArrayList<Record> = ArrayList()
 
         for (record in records) {
-            val newRecord: Record = record.copy()
 
-            if (record.reading.isEmpty()){
-                newRecord.reading = "設備異常"
-            }
-
-            if (newRecord.reading == "設備異常" || record.reading.toInt() > threshold){
-                if (record.status == "良好")
-                    newRecord.status = "The status is good, we want to go out to have fun"
-                verticalRecords.add(newRecord)
+            if (record.reading.isEmpty() || record.reading.toInt() > threshold){
+                verticalRecords.add(record)
             } else{
-                horizontalRecords.add(newRecord)
+                horizontalRecords.add(record)
             }
+
         }
 
         _horizontalListLiveData.postValue(horizontalRecords)

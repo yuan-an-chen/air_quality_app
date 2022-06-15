@@ -1,37 +1,44 @@
 package com.example.air_quality_app
 
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.air_quality_app.databinding.HorizontalCardLayoutBinding
 
-class HorizontalRecyclerAdapter(): RecyclerView.Adapter<HorizontalViewHolder>() {
+class HorizontalRecyclerAdapter(): androidx.recyclerview.widget.ListAdapter<Record, HorizontalRecyclerAdapter.HorizontalViewHolder>(RecordDiffCallback)  {
 
-    private var records: List<Record> = listOf()
+    inner class HorizontalViewHolder(private val itemViewBinding: HorizontalCardLayoutBinding): RecyclerView.ViewHolder(itemViewBinding.root) {
+        fun bind(record: Record){
+            itemViewBinding.hCardIdxTv.text = record.siteId
+            itemViewBinding.hCardCountyTv.text = record.county
+            itemViewBinding.hCardSiteTv.text = record.siteName
+
+            if (record.status == "")
+                itemViewBinding.hCardStatusTv.text = "無數據"
+            else
+                itemViewBinding.hCardStatusTv.text = record.status
+
+            if (record.reading == "")
+                itemViewBinding.hCardReadingTv.text = "無數據"
+            else
+                itemViewBinding.hCardReadingTv.text = record.reading
+
+
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HorizontalViewHolder {
         val cardLayoutItem = HorizontalCardLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return HorizontalViewHolder(cardLayoutItem)
     }
 
-    fun submitList(newList: List<Record>){
-        records = newList
-    }
-
-    override fun getItemCount(): Int {
-        return records.size
-    }
 
     override fun onBindViewHolder(holder: HorizontalViewHolder, position: Int) {
-        val itemBinding = holder.itemViewBinding
-        itemBinding.hCardIdxTv.text = records[position].siteId
-        itemBinding.hCardReadingTv.text = records[position].reading
-        itemBinding.hCardCountyTv.text = records[position].county
-        itemBinding.hCardSiteTv.text = records[position].siteName
-        itemBinding.hCardStatusTv.text = records[position].status
+        holder.bind(getItem(position))
     }
 
 
 }
 
-class HorizontalViewHolder(val itemViewBinding: HorizontalCardLayoutBinding): RecyclerView.ViewHolder(itemViewBinding.root) {}

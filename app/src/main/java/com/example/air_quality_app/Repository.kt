@@ -9,6 +9,8 @@ class Repository private constructor(){
 
     val dataFlow: Flow<List<Record>> = flow{
         emit(fetchData())
+
+        // fetch for every 10 minutes
         while (true){
             delay(600000)
 //            delay(5000)

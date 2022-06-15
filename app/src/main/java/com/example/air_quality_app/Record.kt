@@ -1,5 +1,6 @@
 package com.example.air_quality_app
 
+import androidx.recyclerview.widget.DiffUtil
 import com.google.gson.annotations.SerializedName
 
 data class Record(
@@ -23,3 +24,12 @@ data class Record(
 data class APIResponse(var records: List<Record>){}
 
 
+object RecordDiffCallback : DiffUtil.ItemCallback<Record>() {
+    override fun areItemsTheSame(oldItem: Record, newItem: Record): Boolean {
+        return oldItem == newItem
+    }
+
+    override fun areContentsTheSame(oldItem: Record, newItem: Record): Boolean {
+        return oldItem.siteId == newItem.siteId
+    }
+}
